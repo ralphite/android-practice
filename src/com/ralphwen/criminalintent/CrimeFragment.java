@@ -1,5 +1,9 @@
 package com.ralphwen.criminalintent;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -12,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.text.format.DateFormat;
 
 public class CrimeFragment extends Fragment {
 	private Crime mCrime;
@@ -54,22 +59,28 @@ public class CrimeFragment extends Fragment {
 			}
 
 		});
-		
+
 		mDateButton = (Button) v.findViewById(R.id.crime_date);
-		mDateButton.setText(mCrime.getDate().toString());
+		String weekOfDay = (new SimpleDateFormat("EEEE", Locale.US)
+				.format(Calendar.getInstance().getTime()));
+		String mediumDate = DateFormat.getMediumDateFormat(parent.getContext())
+				.format(mCrime.getDate());
+		mDateButton.setText(weekOfDay + ", " + mediumDate);
 		mDateButton.setEnabled(false);
 
 		mSolvedCheckBox = (CheckBox) v.findViewById(R.id.crime_solved);
-		mSolvedCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		mSolvedCheckBox
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-				// TODO Auto-generated method stub
-				mCrime.setSolved(isChecked);
-			}
-			
-		});
-		
+					@Override
+					public void onCheckedChanged(CompoundButton arg0,
+							boolean isChecked) {
+						// TODO Auto-generated method stub
+						mCrime.setSolved(isChecked);
+					}
+
+				});
+
 		return v;
 	}
 }
