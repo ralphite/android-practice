@@ -65,8 +65,13 @@ public class DatePickerFragment extends DialogFragment {
 			public void onDateChanged(DatePicker view, int year,
 					int monthOfYear, int dayOfMonth) {
 				// TODO Auto-generated method stub
-				mDate = new GregorianCalendar(year, monthOfYear, dayOfMonth)
-						.getTime();
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(mDate);
+				calendar.set(Calendar.YEAR, year);
+				calendar.set(Calendar.MONTH, monthOfYear);
+				calendar.set(Calendar.DATE, dayOfMonth);
+				mDate = calendar.getTime();
+
 				getArguments().putSerializable(EXTRA_DATE, mDate);
 			}
 

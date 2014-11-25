@@ -1,6 +1,5 @@
 package com.ralphwen.criminalintent;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -27,11 +26,14 @@ public class CrimeFragment extends Fragment {
 	public static final String EXTRA_CRIME_ID = "com.ralphwen.criminalintent.crime_id";
 
 	private static final String DIALOG_DATE = "date";
+	private static final String DIALOG_TIME = "time";
 	private static final int REQUEST_DATE = 0;
+	private static final int REQUEST_TIME = 1;
 
 	private Crime mCrime;
 	private EditText mTitleField;
 	private Button mDateButton;
+	private Button mTimeButton;
 	private CheckBox mSolvedCheckBox;
 
 	public static CrimeFragment newInstance(UUID crimeId) {
@@ -99,6 +101,23 @@ public class CrimeFragment extends Fragment {
 			}
 		});
 
+		mTimeButton = (Button) v.findViewById(R.id.crime_time);
+		updateTime();
+		mTimeButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				FragmentManager fm = getActivity().getSupportFragmentManager();
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(mCrime.getDate());
+				TimePickerFragment dialog = TimePickerFragment
+						.newInstance(calendar);
+				dialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
+				dialog.show(fm, DIALOG_TIME);
+			}
+		});
+
 		mSolvedCheckBox = (CheckBox) v.findViewById(R.id.crime_solved);
 		mSolvedCheckBox.setChecked(mCrime.isSolved());
 		mSolvedCheckBox
@@ -116,6 +135,14 @@ public class CrimeFragment extends Fragment {
 		return v;
 	}
 
+	private void updateTime() {
+		// TODO Auto-generated method stub
+		Date date = mCrime.getDate();
+		mTimeButton.setText(String
+				.valueOf(DateFormat.format("hh:mm A z", date)).toUpperCase(
+						Locale.ENGLISH));
+	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != Activity.RESULT_OK)
@@ -125,6 +152,12 @@ public class CrimeFragment extends Fragment {
 					.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
 			mCrime.setDate(date);
 			updateDate();
+		}
+		if (requestCode == REQUEST_TIME) {
+			Calendar calendar = (Calendar) data
+					.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
+			mCrime.setDate(calendar.getTime());
+			updateTime();
 		}
 	}
 
