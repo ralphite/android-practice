@@ -1,9 +1,7 @@
 package com.ralphwen.criminalintent;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.UUID;
 
 import android.app.Activity;
@@ -26,8 +24,8 @@ import android.widget.EditText;
 public class CrimeFragment extends Fragment {
 	public static final String EXTRA_CRIME_ID = "com.ralphwen.criminalintent.crime_id";
 
-	private static final String DIALOG_DATE = "date";
-	private static final int REQUEST_DATE = 0;
+	private static final String DIALOG_CHOICE = "choice";
+	private static final int REQUEST_CHOICE = 0;
 
 	private Crime mCrime;
 	private EditText mTitleField;
@@ -92,10 +90,11 @@ public class CrimeFragment extends Fragment {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				FragmentManager fm = getActivity().getSupportFragmentManager();
-				DatePickerFragment dialog = DatePickerFragment
-						.newInstance(mCrime.getDate());
-				dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
-				dialog.show(fm, DIALOG_DATE);
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(mCrime.getDate());
+				ChoiceFragment dialog = ChoiceFragment.newInstance(calendar);
+				dialog.setTargetFragment(CrimeFragment.this, REQUEST_CHOICE);
+				dialog.show(fm, DIALOG_CHOICE);
 			}
 		});
 
@@ -120,16 +119,17 @@ public class CrimeFragment extends Fragment {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != Activity.RESULT_OK)
 			return;
-		if (requestCode == REQUEST_DATE) {
-			Date date = (Date) data
-					.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-			mCrime.setDate(date);
+		if (requestCode == REQUEST_CHOICE) {
+			Calendar calendar = (Calendar) data
+					.getSerializableExtra(ChoiceFragment.EXTRA_CHOICE);
+			mCrime.setDate(calendar.getTime());
 			updateDate();
 		}
 	}
 
 	private void updateDate() {
 		Date date = mCrime.getDate();
-		mDateButton.setText(DateFormat.format("EEEE, MMM d, yyyy", date));
+		//mDateButton.setText(DateFormat.format("EEEE, MMM d, yyyy", date));
+		mDateButton.setText(date.toString());
 	}
 }

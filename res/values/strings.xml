@@ -8,5 +8,8 @@
     <string name="crime_solved_label">Solved?</string>
     <string name="crimes_title">Crimes</string>
     <string name="date_picker_title">Date of Crime:</string>
+    <string name="date_radio_button_name">Date</string>
+    <string name="time_radio_button_name">Time</string>
+    <string name="choice_dialog_title">Choose which to modify:</string>
 
 </resources>

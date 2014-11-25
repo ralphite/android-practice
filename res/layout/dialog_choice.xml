@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choice_dialog_radioGroup"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RadioButton
+        android:id="@+id/choice_dialog_date_radioButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/date_radio_button_name" >
+    </RadioButton>
+
+    <RadioButton
+        android:id="@+id/choice_dialog_time_radioButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/time_radio_button_name" >
+    </RadioButton>
+
+</RadioGroup>
