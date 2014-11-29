@@ -3,7 +3,6 @@ package com.ralphwen.criminalintent2;
 import java.util.Date;
 import java.util.UUID;
 
-import android.R.integer;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -151,5 +149,11 @@ public class CrimeFragment extends Fragment {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		CrimeLab.get(getActivity()).saveCrimes();
 	}
 }
