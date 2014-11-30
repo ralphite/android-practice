@@ -1,9 +1,12 @@
 package com.ralphwen.criminalintent2;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.os.Build;
@@ -23,6 +26,50 @@ public class CrimeCameraFragment extends Fragment {
 
 	private Camera mCamera;
 	private SurfaceView mSurfaceView;
+	private View mProgressBarContainerView;
+
+	private Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
+
+		@Override
+		public void onShutter() {
+			// TODO Auto-generated method stub
+			mProgressBarContainerView.setVisibility(View.VISIBLE);
+		}
+	};
+
+	private Camera.PictureCallback mJpegCallback = new Camera.PictureCallback() {
+
+		@Override
+		public void onPictureTaken(byte[] data, Camera camera) {
+			// TODO Auto-generated method stub
+			String filename = UUID.randomUUID().toString() + ".jpg";
+			FileOutputStream os = null;
+			boolean success = true;
+
+			try {
+				os = getActivity().openFileOutput(filename,
+						Context.MODE_PRIVATE);
+				os.write(data);
+			} catch (Exception e) {
+				Log.e(TAG, "Error writing to file " + filename, e);
+				success = false;
+			} finally {
+				try {
+					if (os != null)
+						os.close();
+				} catch (Exception e) {
+					Log.e(TAG, "Error closing file " + filename, e);
+					success = false;
+				}
+			}
+
+			if (success) {
+				Log.i(TAG, "JPEG saved at " + filename);
+			}
+
+			getActivity().finish();
+		}
+	};
 
 	@Override
 	@SuppressWarnings("deprecation")
@@ -38,7 +85,9 @@ public class CrimeCameraFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				getActivity().finish();
+				if (mCamera != null) {
+					mCamera.takePicture(mShutterCallback, null, mJpegCallback);
+				}
 			}
 		});
 
@@ -78,6 +127,9 @@ public class CrimeCameraFragment extends Fragment {
 				Size s = getBestSupportedSize(
 						parameters.getSupportedPreviewSizes(), width, height);
 				parameters.setPreviewSize(s.width, s.height);
+				s = getBestSupportedSize(parameters.getSupportedPictureSizes(),
+						width, height);
+				parameters.setPictureSize(s.width, s.height);
 				mCamera.setParameters(parameters);
 				try {
 					mCamera.startPreview();
@@ -89,6 +141,10 @@ public class CrimeCameraFragment extends Fragment {
 				}
 			}
 		});
+
+		mProgressBarContainerView = (View) v
+				.findViewById(R.id.crime_camera_progressContainer);
+		mProgressBarContainerView.setVisibility(View.INVISIBLE);
 
 		return v;
 	}
