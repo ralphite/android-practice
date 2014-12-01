@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.UUID;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.os.Build;
@@ -23,6 +25,9 @@ import android.widget.Button;
 public class CrimeCameraFragment extends Fragment {
 
 	private static final String TAG = "CrimeCameraFragment";
+
+	// extra constants
+	public static final String EXTRA_PHOTO_FILENAME = "com.ralphwen.crimeintent2.photo_filename";
 
 	private Camera mCamera;
 	private SurfaceView mSurfaceView;
@@ -64,7 +69,11 @@ public class CrimeCameraFragment extends Fragment {
 			}
 
 			if (success) {
-				Log.i(TAG, "JPEG saved at " + filename);
+				Intent i = new Intent();
+				i.putExtra(EXTRA_PHOTO_FILENAME, filename);
+				getActivity().setResult(Activity.RESULT_OK, i);
+			} else {
+				getActivity().setResult(Activity.RESULT_CANCELED);
 			}
 
 			getActivity().finish();

@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.SurfaceHolder.Callback;
@@ -29,10 +30,16 @@ import android.widget.EditText;
 
 public class CrimeFragment extends Fragment {
 
+	// log tag
+	private static final String TAG = "CrimeFragment";
+
 	public static final String EXTRA_CRIME_ID = "com.ralphwen.criminalintent2.crime_id";
 
 	private static final String DIALOG_DATE = "date";
+
+	// request code constants
 	private static final int REQUEST_DATE = 0;
+	private static final int REQUEST_PHOTO = 1;
 
 	private Crime mCrime;
 	private EditText mTitleField;
@@ -131,7 +138,7 @@ public class CrimeFragment extends Fragment {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(getActivity(), CrimeCameraActivity.class);
-				startActivity(i);
+				startActivityForResult(i, REQUEST_PHOTO);
 			}
 		});
 
@@ -156,6 +163,17 @@ public class CrimeFragment extends Fragment {
 					.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
 			mCrime.setDate(date);
 			updateDate();
+		} else if (requestCode == REQUEST_PHOTO) {
+			String filename = data
+					.getStringExtra(CrimeCameraFragment.EXTRA_PHOTO_FILENAME);
+
+			if (filename != null) {
+				Photo photo = new Photo(filename);
+				mCrime.setPhoto(photo);
+
+				Log.i(TAG, "Crime: " + mCrime.getTitle() + " has a photo");
+
+			}
 		}
 	}
 
