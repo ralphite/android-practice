@@ -7,6 +7,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 public class CrimeFragment extends Fragment {
 
@@ -46,6 +48,7 @@ public class CrimeFragment extends Fragment {
 	private Button mDateButton;
 	private CheckBox mSolvedCheckBox;
 	private ImageButton mPhotoButton;
+	private ImageView mPhotoImageView;
 
 	public static CrimeFragment newInstance(UUID crimeId) {
 		Bundle args = new Bundle();
@@ -151,6 +154,8 @@ public class CrimeFragment extends Fragment {
 		if (!hasACamera)
 			mPhotoButton.setEnabled(false);
 
+		mPhotoImageView = (ImageView) v.findViewById(R.id.crime_imageView);
+
 		return v;
 	}
 
@@ -170,15 +175,27 @@ public class CrimeFragment extends Fragment {
 			if (filename != null) {
 				Photo photo = new Photo(filename);
 				mCrime.setPhoto(photo);
-
-				Log.i(TAG, "Crime: " + mCrime.getTitle() + " has a photo");
-
+				showPhoto();
 			}
 		}
 	}
 
 	private void updateDate() {
 		mDateButton.setText(mCrime.getDate().toString());
+	}
+
+	private void showPhoto() {
+		Photo photo = mCrime.getPhoto();
+		BitmapDrawable bitmapDrawable = null;
+
+		if (photo != null) {
+			String pathString = getActivity().getFileStreamPath(
+					photo.getFilename()).getAbsolutePath();
+			bitmapDrawable = PictureUtils.getScaledDrawable(getActivity(),
+					pathString);
+		}
+
+		mPhotoImageView.setImageDrawable(bitmapDrawable);
 	}
 
 	@Override
@@ -198,5 +215,17 @@ public class CrimeFragment extends Fragment {
 	public void onPause() {
 		super.onPause();
 		CrimeLab.get(getActivity()).saveCrimes();
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		showPhoto();
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		PictureUtils.cleanImageView(mPhotoImageView);
 	}
 }
