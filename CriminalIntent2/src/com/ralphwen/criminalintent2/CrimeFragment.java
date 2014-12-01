@@ -38,6 +38,7 @@ public class CrimeFragment extends Fragment {
 	public static final String EXTRA_CRIME_ID = "com.ralphwen.criminalintent2.crime_id";
 
 	private static final String DIALOG_DATE = "date";
+	private static final String DIALOG_IMAGE = "image";
 
 	// request code constants
 	private static final int REQUEST_DATE = 0;
@@ -155,6 +156,21 @@ public class CrimeFragment extends Fragment {
 			mPhotoButton.setEnabled(false);
 
 		mPhotoImageView = (ImageView) v.findViewById(R.id.crime_imageView);
+		mPhotoImageView.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Photo photo = mCrime.getPhoto();
+				if (photo == null)
+					return;
+
+				FragmentManager fm = getActivity().getSupportFragmentManager();
+				String path = getActivity().getFileStreamPath(
+						photo.getFilename()).getAbsolutePath();
+				ImageFragment.newInstance(path).show(fm, DIALOG_IMAGE);
+			}
+		});
 
 		return v;
 	}
