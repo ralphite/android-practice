@@ -7,10 +7,13 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
@@ -44,6 +47,7 @@ public class CrimeFragment extends Fragment {
 	// request code constants
 	private static final int REQUEST_DATE = 0;
 	private static final int REQUEST_PHOTO = 1;
+	private static final int REQUEST_CONTACT = 2;
 
 	private Crime mCrime;
 	private EditText mTitleField;
@@ -51,6 +55,7 @@ public class CrimeFragment extends Fragment {
 	private CheckBox mSolvedCheckBox;
 	private ImageButton mPhotoButton;
 	private ImageView mPhotoImageView;
+	private Button mSuspectButton;
 
 	public static CrimeFragment newInstance(UUID crimeId) {
 		Bundle args = new Bundle();
@@ -191,6 +196,21 @@ public class CrimeFragment extends Fragment {
 			}
 		});
 
+		mSuspectButton = (Button) v.findViewById(R.id.crime_suspectButton);
+		mSuspectButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(Intent.ACTION_PICK,
+						ContactsContract.Contacts.CONTENT_URI);
+				startActivityForResult(i, REQUEST_CONTACT);
+			}
+		});
+
+		if (mCrime.getSuspect() != null)
+			mSuspectButton.setText(mCrime.getSuspect());
+
 		return v;
 	}
 
@@ -212,6 +232,25 @@ public class CrimeFragment extends Fragment {
 				mCrime.setPhoto(photo);
 				showPhoto();
 			}
+		} else if (requestCode == REQUEST_CONTACT) {
+			Uri contactUri = data.getData();
+
+			String[] queryFieldStrings = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
+
+			Cursor cursor = getActivity().getContentResolver().query(
+					contactUri, queryFieldStrings, null, null, null);
+
+			if (cursor.getCount() == 0) {
+				cursor.close();
+				return;
+			}
+
+			cursor.moveToFirst();
+			String suspect = cursor.getString(0);
+			mCrime.setSuspect(suspect);
+			mSuspectButton.setText(suspect);
+
+			cursor.close();
 		}
 	}
 
