@@ -173,6 +173,24 @@ public class CrimeFragment extends Fragment {
 			}
 		});
 
+		Button reportButton = (Button) v.findViewById(R.id.crime_reportButton);
+		reportButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(Intent.ACTION_SEND);
+				intent.setType("text/plain");
+				intent.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
+				intent.putExtra(Intent.EXTRA_SUBJECT,
+						getString(R.string.crime_report_subject));
+				intent = Intent.createChooser(intent,
+						getString(R.string.send_report));
+
+				startActivity(intent);
+			}
+		});
+
 		return v;
 	}
 
