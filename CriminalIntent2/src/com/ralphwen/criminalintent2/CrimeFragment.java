@@ -57,6 +57,24 @@ public class CrimeFragment extends Fragment {
 	private ImageView mPhotoImageView;
 	private Button mSuspectButton;
 
+	private Callbacks mCallbacks;
+
+	public interface Callbacks {
+		void onCrimeUpdated(Crime crime);
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		mCallbacks = (Callbacks) activity;
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		mCallbacks = null;
+	}
+
 	public static CrimeFragment newInstance(UUID crimeId) {
 		Bundle args = new Bundle();
 		args.putSerializable(EXTRA_CRIME_ID, crimeId);
@@ -102,6 +120,7 @@ public class CrimeFragment extends Fragment {
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
 				// TODO Auto-generated method stub
+				mCallbacks.onCrimeUpdated(mCrime);
 				mCrime.setTitle(s.toString());
 			}
 
@@ -137,6 +156,7 @@ public class CrimeFragment extends Fragment {
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						// TODO Auto-generated method stub
+						mCallbacks.onCrimeUpdated(mCrime);
 						mCrime.setSolved(isChecked);
 					}
 				});
@@ -222,6 +242,7 @@ public class CrimeFragment extends Fragment {
 			Date date = (Date) data
 					.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
 			mCrime.setDate(date);
+			mCallbacks.onCrimeUpdated(mCrime);
 			updateDate();
 		} else if (requestCode == REQUEST_PHOTO) {
 			String filename = data
@@ -230,6 +251,7 @@ public class CrimeFragment extends Fragment {
 			if (filename != null) {
 				Photo photo = new Photo(filename);
 				mCrime.setPhoto(photo);
+				mCallbacks.onCrimeUpdated(mCrime);
 				showPhoto();
 			}
 		} else if (requestCode == REQUEST_CONTACT) {
@@ -248,6 +270,7 @@ public class CrimeFragment extends Fragment {
 			cursor.moveToFirst();
 			String suspect = cursor.getString(0);
 			mCrime.setSuspect(suspect);
+			mCallbacks.onCrimeUpdated(mCrime);
 			mSuspectButton.setText(suspect);
 
 			cursor.close();
