@@ -32,15 +32,17 @@ public class PhotoGalleryFragment extends Fragment {
 		new FetchItemsTask().execute();
 
 		mThumbnailThread = new ThumbnailDownloader<ImageView>(new Handler());
-		mThumbnailThread.setListener(new ThumbnailDownloader.Listener<ImageView>() {
+		mThumbnailThread
+				.setListener(new ThumbnailDownloader.Listener<ImageView>() {
 
-			@Override
-			public void onThumbnailDownloaded(ImageView imageView, Bitmap thumbnail) {
-				// TODO Auto-generated method stub
-				if(isVisible())
-					imageView.setImageBitmap(thumbnail);
-			}
-		});
+					@Override
+					public void onThumbnailDownloaded(ImageView imageView,
+							Bitmap thumbnail) {
+						// TODO Auto-generated method stub
+						if (isVisible())
+							imageView.setImageBitmap(thumbnail);
+					}
+				});
 		mThumbnailThread.start();
 		mThumbnailThread.getLooper();
 		Log.i(TAG, "Background thread started");
@@ -65,7 +67,7 @@ public class PhotoGalleryFragment extends Fragment {
 
 		return view;
 	}
-	
+
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
@@ -88,7 +90,12 @@ public class PhotoGalleryFragment extends Fragment {
 			AsyncTask<Void, Void, ArrayList<GalleryItem>> {
 		@Override
 		protected ArrayList<GalleryItem> doInBackground(Void... params) {
-			return new FlickrFetchr().fetchItems();
+			String query = "namib";
+
+			if (query != null) {
+				return new FlickrFetchr().search(query);
+			} else
+				return new FlickrFetchr().fetchItems();
 		}
 
 		@Override
