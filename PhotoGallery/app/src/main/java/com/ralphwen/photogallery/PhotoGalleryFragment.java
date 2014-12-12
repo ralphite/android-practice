@@ -1,9 +1,11 @@
 package com.ralphwen.photogallery;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,7 +39,7 @@ public class PhotoGalleryFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        new FetchItemsTask().execute();
+        updateItems();
 
         mThumbnailThread = new ThumbnailDownloader<>(new Handler());
         mThumbnailThread.setListener(new ThumbnailDownloader.Listener<ImageView>() {
@@ -50,6 +52,10 @@ public class PhotoGalleryFragment extends Fragment {
         mThumbnailThread.start();
         mThumbnailThread.getLooper();
         Log.i(TAG, "Background thread started.");
+    }
+
+    public void updateItems() {
+        new FetchItemsTask().execute();
     }
 
     @Override
@@ -88,6 +94,11 @@ public class PhotoGalleryFragment extends Fragment {
                 getActivity().onSearchRequested();
                 return true;
             case R.id.menu_item_clear:
+                PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .edit()
+                        .putString(FlickrFetchr.PREF_SEARCH_QUERY, null)
+                        .commit();
+                updateItems();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -108,8 +119,12 @@ public class PhotoGalleryFragment extends Fragment {
         @Override
         protected ArrayList<GalleryItem> doInBackground(Void... params) {
 
-            String query = "sufi";
+            Activity activity = getActivity();
+            if (activity == null)
+                return new ArrayList<GalleryItem>();
 
+            String query = PreferenceManager.getDefaultSharedPreferences(activity)
+                    .getString(FlickrFetchr.PREF_SEARCH_QUERY, null);
             if (query != null)
                 return new FlickrFetchr().search(query);
             else
