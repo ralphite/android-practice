@@ -30,7 +30,7 @@ import java.util.ArrayList;
 /**
  * Created by Yadong on 12/9/2014.
  */
-public class PhotoGalleryFragment extends Fragment {
+public class PhotoGalleryFragment extends VisibleFragment {
 
     //log tag
     private static final String TAG = "PhotoGalleryFragment";
