@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -87,7 +86,8 @@ public class PhotoGalleryFragment extends VisibleFragment {
                 GalleryItem item = mItems.get(position);
 
                 Uri photoPageUri = Uri.parse(item.getPhotoPageUrl());
-                Intent i = new Intent(Intent.ACTION_VIEW, photoPageUri);
+                Intent i = new Intent(getActivity(), PhotoPageActivity.class);
+                i.setData(photoPageUri);
 
                 startActivity(i);
             }
