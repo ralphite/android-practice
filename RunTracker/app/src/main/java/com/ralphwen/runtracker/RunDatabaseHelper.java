@@ -67,10 +67,63 @@ public class RunDatabaseHelper extends SQLiteOpenHelper {
         return getWritableDatabase().insert(TABLE_LOCATION, null, cv);
     }
 
+    public RunCursor queryRun(long id) {
+        Cursor wrapped = getReadableDatabase().query(TABLE_RUN,
+                null,
+                COLUMN_RUN_ID + " = ?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null,
+                "1");
+        return new RunCursor(wrapped);
+    }
+
     public RunCursor queryRuns() {
         Cursor wrapped = getReadableDatabase().query(TABLE_RUN,
                 null, null, null, null, null, COLUMN_RUN_START_DATE + " asc");
         return new RunCursor(wrapped);
+    }
+
+    public LocationCursor queryLastLocationForRun(long runId) {
+        Cursor wrapped = getReadableDatabase().query(
+                TABLE_LOCATION,
+                null,
+                COLUMN_LOCATION_RUN_ID + " = ?",
+                new String[]{String.valueOf(runId)},
+                null,
+                null,
+                COLUMN_LOCATION_TIMESTAMP + " desc",
+                "1"
+        );
+
+        return new LocationCursor(wrapped);
+    }
+
+    public static class LocationCursor extends CursorWrapper {
+
+        /**
+         * Creates a cursor wrapper.
+         *
+         * @param cursor The underlying cursor to wrap.
+         */
+        public LocationCursor(Cursor cursor) {
+            super(cursor);
+        }
+
+        public Location getLocation() {
+            if (isBeforeFirst() || isAfterLast()) {
+                return null;
+            }
+            String provider = getString(getColumnIndex(COLUMN_LOCATION_PROVIDER));
+            Location loc = new Location(provider);
+            loc.setLongitude(getDouble(getColumnIndex(COLUMN_LOCATION_LONGITUDE)));
+            loc.setLatitude(getDouble(getColumnIndex(COLUMN_LOCATION_LATITUDE)));
+            loc.setAltitude(getDouble(getColumnIndex(COLUMN_LOCATION_ALTITUDE)));
+            loc.setTime(getLong(getColumnIndex(COLUMN_LOCATION_TIMESTAMP)));
+
+            return loc;
+        }
     }
 
     public static class RunCursor extends CursorWrapper {
