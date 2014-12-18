@@ -8,6 +8,18 @@ import java.util.Date;
  * Project: RunTracker
  */
 public class Run {
+
+    private long mId;
+    private Date mStartDate;
+
+    public long getId() {
+        return mId;
+    }
+
+    public void setId(long id) {
+        mId = id;
+    }
+
     public void setStartDate(Date startDate) {
         mStartDate = startDate;
     }
@@ -17,9 +29,8 @@ public class Run {
         return mStartDate;
     }
 
-    private Date mStartDate;
-
     public Run() {
+        mId = -1;
         mStartDate = new Date();
     }
 
