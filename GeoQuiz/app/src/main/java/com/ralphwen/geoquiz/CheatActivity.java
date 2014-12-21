@@ -1,6 +1,7 @@
 package com.ralphwen.geoquiz;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -24,6 +25,7 @@ public class CheatActivity extends ActionBarActivity {
 
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
+    private TextView mApiLevelTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,7 @@ public class CheatActivity extends ActionBarActivity {
         mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mAnswerIsTrue) {
+                if (mAnswerIsTrue) {
                     mAnswerTextView.setText(R.string.true_button);
                 } else {
                     mAnswerTextView.setText(R.string.false_button);
@@ -50,6 +52,10 @@ public class CheatActivity extends ActionBarActivity {
                 setAnswerIsShownResult(true);
             }
         });
+
+        mApiLevelTextView = (TextView) findViewById(R.id.api_level_textView);
+        mApiLevelTextView.setText("API level " + String.valueOf(Build.VERSION.SDK_INT));
+        mApiLevelTextView.setTextSize(30);
     }
 
     void setAnswerIsShownResult(boolean isAnswerShown) {
