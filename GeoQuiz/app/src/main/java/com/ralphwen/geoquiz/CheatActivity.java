@@ -1,5 +1,6 @@
 package com.ralphwen.geoquiz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -16,6 +17,8 @@ public class CheatActivity extends ActionBarActivity {
     //intent extras
     public static final String EXTRA_ANSWER_IS_TRUE =
             "com.ralphwen.geoquiz.answer_is_true";
+    public static final String EXTRA_ANSWER_IS_SHOWN =
+            "com.ralphwen.geoquiz.answer_is_shown";
 
     private boolean mAnswerIsTrue;
 
@@ -26,6 +29,9 @@ public class CheatActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
+
+        //answer will not be shown until the users presses the button
+        setAnswerIsShownResult(false);
 
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
@@ -40,7 +46,15 @@ public class CheatActivity extends ActionBarActivity {
                 } else {
                     mAnswerTextView.setText(R.string.false_button);
                 }
+
+                setAnswerIsShownResult(true);
             }
         });
+    }
+
+    void setAnswerIsShownResult(boolean isAnswerShown) {
+        Intent data = new Intent();
+        data.putExtra(EXTRA_ANSWER_IS_SHOWN, isAnswerShown);
+        setResult(RESULT_OK, data);
     }
 }
