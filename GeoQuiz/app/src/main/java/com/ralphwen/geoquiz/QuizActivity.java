@@ -1,7 +1,9 @@
 package com.ralphwen.geoquiz;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -43,6 +45,11 @@ public class QuizActivity extends ActionBarActivity {
         Log.d(TAG, "onCreate() called");
 
         setContentView(R.layout.activity_quiz);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setSubtitle("Bodies of water");
+        }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
 
