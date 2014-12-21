@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashSet;
+
 
 public class QuizActivity extends ActionBarActivity {
 
@@ -20,6 +22,7 @@ public class QuizActivity extends ActionBarActivity {
     //bundle keys
     private static final String KEY_INDEX = "index";
     private static final String KEY_IS_CHEATER = "is_cheater";
+    private static final String KEY_CHEATED_QUESTION_INDICES_SET = "cheated_questions";
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -37,7 +40,9 @@ public class QuizActivity extends ActionBarActivity {
 
     private int mCurrentIndex = 0;
     private boolean mIsCheater = false;
+    private HashSet<Integer> mCheatedQuestionIndicesSet = new HashSet<>();
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +71,15 @@ public class QuizActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+
+                //default to false
                 mIsCheater = false;
+                //check if cheated on this question before
+                if(mCheatedQuestionIndicesSet != null
+                        && mCheatedQuestionIndicesSet.contains(mCurrentIndex)) {
+                    mIsCheater = true;
+                }
+
                 updateQuestion();
             }
         });
@@ -84,6 +97,12 @@ public class QuizActivity extends ActionBarActivity {
         if(savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
             mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER, false);
+            mCheatedQuestionIndicesSet = (HashSet<Integer>)
+                    savedInstanceState.get(KEY_CHEATED_QUESTION_INDICES_SET);
+            // in case null is returned
+            if(mCheatedQuestionIndicesSet == null) {
+                mCheatedQuestionIndicesSet = new HashSet<>();
+            }
         }
 
         updateQuestion();
@@ -118,6 +137,8 @@ public class QuizActivity extends ActionBarActivity {
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
         savedInstanceState.putBoolean(KEY_IS_CHEATER, mIsCheater);
+        savedInstanceState.putSerializable(KEY_CHEATED_QUESTION_INDICES_SET,
+                mCheatedQuestionIndicesSet);
     }
 
     @Override
@@ -148,6 +169,9 @@ public class QuizActivity extends ActionBarActivity {
             return;
         }
         mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_IS_SHOWN, false);
+        if (mIsCheater) {
+            mCheatedQuestionIndicesSet.add(mCurrentIndex);
+        }
     }
 
     @Override
