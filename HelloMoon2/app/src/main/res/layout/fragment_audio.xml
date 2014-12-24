@@ -5,7 +5,7 @@
 
     <ImageView
         android:src="@drawable/armstrong_on_moon"
-        android:contentDescription="@string/hellomoon_description"
+        android:contentDescription="@string/description"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerInside"
@@ -16,22 +16,22 @@
         android:layout_weight="0">
 
         <Button
-            android:id="@+id/hellomoon_playButton"
+            android:id="@+id/audio_playButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hellomoon_play"/>
+            android:text="@string/play"/>
 
         <Button
-            android:id="@+id/hellomoon_pauseButton"
+            android:id="@+id/audio_pauseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hellomoon_pause"/>
+            android:text="@string/pause"/>
 
         <Button
-            android:id="@+id/hellomoon_stopButton"
+            android:id="@+id/audio_stopButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hellomoon_stop"/>
+            android:text="@string/stop"/>
 
     </TableRow>
 
