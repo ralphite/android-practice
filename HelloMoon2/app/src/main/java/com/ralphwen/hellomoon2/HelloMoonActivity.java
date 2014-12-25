@@ -22,7 +22,7 @@ public class HelloMoonActivity extends ActionBarActivity {
     private AudioPlayer mAudioPlayer;
     private VideoView mVideoView;
     private Uri mUri = Uri.parse("android.resource://" +
-            "com.ralphwen.hellomoon2/raw/apollo.17.stroll");
+            "com.ralphwen.hellomoon2/raw/apollo_17_stroll");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,5 +71,31 @@ public class HelloMoonActivity extends ActionBarActivity {
 
         mVideoView = (VideoView) findViewById(R.id.videoView);
         mVideoView.setVideoURI(mUri);
+
+        final Button mVideoPlayButton = (Button) findViewById(R.id.video_playButton);
+        mVideoPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!mVideoView.isPlaying()) {
+                    mVideoView.start();
+                }
+            }
+        });
+        final Button mPauseResumeButton = (Button) findViewById(R.id.video_pauseButton);
+        mPauseResumeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mVideoView.pause();
+            }
+        });
+        Button mVideoStopButton = (Button) findViewById(R.id.video_stopButton);
+        mVideoStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mVideoView.isPlaying()) {
+                    mVideoView.stopPlayback();
+                }
+            }
+        });
     }
 }
